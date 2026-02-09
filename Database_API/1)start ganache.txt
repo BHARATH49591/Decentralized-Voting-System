@@ -1,0 +1,40 @@
+
+metamask password:Bharath@6069
+1)start ganache
+2)open the terminal
+cd downloads\Decentralized-Voting-System-main\Decentralized-Voting-System-main
+
+
+Remove-Item -Recurse -Force build
+ CHECK GANACHE ONCE CLICK ON RELANCH
+
+truffle migrate --reset
+
+3)open new terminal
+
+cd downloads\Decentralized-Voting-System-main\Decentralized-Voting-System-main\database_api
+
+
+python -m uvicorn main:app --reload
+
+4)open new terminal
+cd downloads\Decentralized-Voting-System-main\Decentralized-Voting-System-main 
+npx browserify ./src/js/app.js -o ./src/dist/app.bundle.js
+node index.js
+
+5)open sql shell
+\sql
+\connect root@localhost
+Bharath@60
+use voter_db;
+select * from voters;
++-----------+-------+----------+
+| voter_id  | role  | password |
++-----------+-------+----------+
+| admin-001 | admin | admin123 |
+| user-001  | user  | user123  |
+| USER-002  | user  | FEROZ    |
++-----------+-------+----------+
+
+
+
