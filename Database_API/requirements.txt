@@ -1,6 +1,7 @@
-fastapi==0.104.1
-uvicorn==0.24.0.post1
-mysql-connector-python==8.2.0
-python-dotenv==1.0.0
-PyJWT==2.8.0
-pydantic==2.5.2
+fastapi
+uvicorn
+mysql-connector-python
+python-dotenv
+PyJWT
+pydantic
+gunicorn
