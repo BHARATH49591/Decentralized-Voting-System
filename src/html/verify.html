@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verify Your Vote | Decentralized Voting</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" type="text/css" href="../css/verify.css">
+</head>
+
+<body>
+  <div class="overlay"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <i class="fa-solid fa-landmark"></i>
+        <span data-i18n="nav.brand">Election Commission Of INDIA</span>
+      </div>
+      <div class="nav-items">
+        <button id="langToggle" class="nav-link-btn" onclick="toggleLanguage()">
+          🇮🇳 हिन्दी
+        </button>
+        <a href="login.html" class="nav-link">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span data-i18n="nav.login">Login</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <div class="main-content">
+    <div class="verify-container glass-container">
+      <div class="verify-header">
+        <div class="verify-icon">
+          <i class="fa-solid fa-shield-check"></i>
+        </div>
+        <h1 data-i18n="verify.title">Verify Your Vote</h1>
+        <p class="verify-subtitle" data-i18n="verify.subtitle">Enter your transaction hash to confirm your vote was recorded on the blockchain</p>
+      </div>
+
+      <div class="verify-form">
+        <div class="input-group">
+          <i class="fa-solid fa-hashtag input-icon"></i>
+          <input type="text" id="txHashInput" placeholder="Enter transaction hash (0x...)" data-i18n="verify.placeholder" autocomplete="off">
+          <button id="pasteBtn" class="btn-paste" title="Paste from clipboard">
+            <i class="fa-solid fa-paste"></i>
+          </button>
+        </div>
+        <button id="verifyBtn" class="btn-verify">
+          <span class="btn-text"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="verify.btn">Verify Vote</span></span>
+          <span class="btn-loader" style="display: none;">
+            <i class="fa-solid fa-spinner fa-spin"></i> Verifying...
+          </span>
+        </button>
+      </div>
+
+      <!-- Result Section (hidden by default) -->
+      <div id="resultSection" class="result-section" style="display: none;">
+        <div id="resultContent"></div>
+      </div>
+
+      <div class="verify-info">
+        <h3><i class="fa-solid fa-circle-info"></i> <span data-i18n="verify.howItWorks">How it works</span></h3>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> <span data-i18n="verify.step1">Scan the QR code on your voting receipt OR enter the transaction hash manually</span></li>
+          <li><i class="fa-solid fa-check"></i> <span data-i18n="verify.step2">We check the blockchain for your vote record</span></li>
+          <li><i class="fa-solid fa-check"></i> <span data-i18n="verify.step3">Your vote choice remains private - only the timestamp is shown</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="blockchain-animation">
+      <div class="block"></div>
+      <div class="block"></div>
+      <div class="block"></div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="../dist/verify.bundle.js"></script>
+  <script src="../js/language.js"></script>
+</body>
+
+</html>

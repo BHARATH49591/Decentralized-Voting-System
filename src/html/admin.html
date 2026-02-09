@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Portal | Decentralized Voting</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" type="text/css" href="../css/admin.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="overlay"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <i class="fa-solid fa-landmark"></i>
+        <span data-i18n="nav.brand">Election Commission Of INDIA</span>
+      </div>
+      <div class="nav-items">
+        <button id="langToggle" class="nav-link-btn" onclick="toggleLanguage()">
+          🇮🇳 हिन्दी
+        </button>
+        <div class="nav-user">
+          <i class="fa-solid fa-user-shield"></i>
+          <span>Admin</span>
+        </div>
+        <button id="navLogout" class="nav-logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <div class="main-content">
+    <div id="head">
+      <div class="header-flex" style="justify-content: space-between; align-items: center; width: 100%;">
+        <div>
+          <h1 class="main-title"><i class="fa-solid fa-user-shield"></i> <span data-i18n="admin.title">Admin Portal</span></h1>
+          <p class="subtitle" data-i18n="admin.subtitle">Management Dashboard</p>
+        </div>
+        <div class="header-actions">
+           <button class="btn-export-header" onclick="App.exportToCSV()" title="Download Results CSV">
+             <i class="fa-solid fa-file-csv"></i> Export CSV
+           </button>
+           <button class="btn-export-header" onclick="App.exportToPDF()" title="Print Results PDF">
+             <i class="fa-solid fa-file-pdf"></i> Save PDF
+           </button>
+            <button id="publishResultsBtn" class="btn-publish" onclick="App.publishResults()" title="End Election & Announce Winner">
+              <i class="fa-solid fa-trophy"></i> Publish Results
+            </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #8B5CF6, #A78BFA);">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="totalCandidates">0</h3>
+          <p>Candidates</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #059669);">
+          <i class="fa-solid fa-check-to-slot"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="totalVotes">0</h3>
+          <p>Votes Cast</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="votingStatus">Inactive</h3>
+          <p>Status</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="grid-container">
+      <!-- Add Candidate Card -->
+      <div class="glass-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-user-plus"></i> <span data-i18n="card.addCandidate">Add Candidate</span></h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group grid-row">
+            <div class="input-col">
+              <label>Candidate Name</label>
+              <input id="name" type="text" name="name" placeholder="Enter candidate's full name" autocomplete="off"
+                required>
+            </div>
+            <div class="input-col">
+              <label>Party Name</label>
+              <input id="party" type="text" name="party" placeholder="Enter party name" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Party Description (Optional)</label>
+            <textarea id="partyDescription" placeholder="Brief description about the party..." rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Party Logo/Symbol</label>
+            <div class="file-upload-wrapper">
+              <input type="file" id="partyImage" accept="image/*" class="file-input">
+              <label for="partyImage" class="file-label">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span id="fileName">Choose party logo image</span>
+              </label>
+            </div>
+            <div id="imagePreview" class="image-preview" style="display: none;">
+              <img id="previewImg" src="" alt="Preview">
+              <button type="button" id="removeImage" class="btn-remove-image">
+                <i class="fa-solid fa-times"></i>
+              </button>
+            </div>
+          </div>
+
+          <button id="addCandidate" type="submit" class="btn-action">
+            <span class="btn-text"><i class="fa-solid fa-plus"></i> Add Candidate</span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-spinner fa-spin"></i> Adding...
+            </span>
+          </button>
+          <p id="candidateMsg" class="status-msg"></p>
+        </div>
+      </div>
+
+      <!-- Candidates List Card -->
+      <div class="glass-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-list"></i> Candidates List</h3>
+        </div>
+        <div class="card-body">
+          <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="adminCandidateSearch" placeholder="Filter candidates..."
+              onkeyup="filterAdminCandidates()">
+          </div>
+          <div id="candidatesList" class="candidates-list">
+            <p class="empty-state"><i class="fa-solid fa-inbox"></i> No candidates added yet</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Voter Approvals Card -->
+      <div class="glass-card full-width">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-user-check"></i> Voter Registration Approvals</h3>
+        </div>
+        <div class="card-body">
+          <div id="pendingVotersList" class="approvals-list">
+            <p class="empty-state"><i class="fa-solid fa-thumbs-up"></i> No pending registrations</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Define Dates Card -->
+      <div class="glass-card">
+        <div class="card-header">
+          <h3><i class="fa-regular fa-calendar-check"></i> Define Voting Period</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group grid-row">
+            <div class="input-col">
+              <label>Start Date & Time</label>
+              <input id="startDate" type="date" required>
+            </div>
+            <div class="input-col">
+              <label>End Date & Time</label>
+              <input id="endDate" type="date" required>
+            </div>
+          </div>
+          <button id="addDate" type="submit" class="btn-action">
+            <span class="btn-text"><i class="fa-solid fa-clock"></i> Set Voting Period</span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-spinner fa-spin"></i> Setting...
+            </span>
+          </button>
+          <p id="dateMsg" class="status-msg"></p>
+        </div>
+      </div>
+
+      <!-- Broadcast Message Card -->
+      <div class="glass-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-bullhorn"></i> <span data-i18n="card.broadcast">Broadcast Message</span></h3>
+        </div>
+        <div class="card-body">
+          <p class="card-description">Post a message to the election ticker visible to all voters</p>
+          <div class="form-group">
+            <label>Ticker Message</label>
+            <input id="tickerMessage" type="text" placeholder="e.g., 'Voting extended by 2 hours!' or 'New polling station added'" maxlength="200">
+            <small class="char-count"><span id="charCount">0</span>/200 characters</small>
+          </div>
+          <div id="currentTickerPreview" class="ticker-preview" style="display: none;">
+            <label>Current Message:</label>
+            <span id="currentTickerText"></span>
+          </div>
+          <button id="postTicker" type="submit" class="btn-action btn-broadcast">
+            <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Post to Ticker</span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-spinner fa-spin"></i> Posting...
+            </span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Voter Notification Card -->
+      <div class="glass-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-envelope"></i> <span data-i18n="card.notify">Voter Notification</span></h3>
+        </div>
+        <div class="card-body">
+          <p class="card-description">Trigger an automated email to all approved voters announcing that voting has started.</p>
+          <div class="alert-box info-alert">
+             <i class="fa-solid fa-circle-info"></i> Contains connection details and voting link.
+          </div>
+          <button id="notifyVoters" type="button" class="btn-action btn-notify" style="margin-top: 15px;">
+            <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Send "Voting Live" Emails</span>
+            <span class="btn-loader" style="display: none;">
+              <i class="fa-solid fa-spinner fa-spin"></i> Sending...
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="../dist/app.bundle.js" type="module"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/language.js"></script>
+</body>
+
+</html>

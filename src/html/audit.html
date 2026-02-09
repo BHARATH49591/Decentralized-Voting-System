@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Public Audit Portal | Transparency Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/admin.css">
+    <style>
+        .audit-log-container {
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .log-entry {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.5s ease-out;
+        }
+        .log-entry:last-child { border-bottom: none; }
+        .log-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        .log-vote { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+        .log-candidate { background: rgba(139, 92, 246, 0.2); color: #8B5CF6; }
+        .log-details { flex-grow: 1; }
+        .log-time { font-size: 0.8rem; color: #94A3B8; }
+        .log-hash { font-family: monospace; font-size: 0.75rem; color: #6366F1; cursor: pointer; }
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #10B981;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: 10px;
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fa-solid fa-landmark"></i>
+                <span>Election Commission Of INDIA</span>
+            </div>
+            <div class="nav-items">
+                <a href="login.html" class="nav-link-btn" style="text-decoration: none; display: flex; align-items: center;">
+                    <i class="fa-solid fa-right-to-bracket" style="margin-right: 8px;"></i> Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div id="head">
+            <h1 class="main-title">
+                <i class="fa-solid fa-shield-halved"></i> Public Audit Portal
+                <span class="live-indicator"><span class="live-dot"></span> LIVE AUDIT</span>
+            </h1>
+            <p class="subtitle">Immutable real-time audit trail directly from the blockchain</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #059669);">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="totalVotes">0</h3>
+                    <p>Verified Votes</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="totalCandidates">0</h3>
+                    <p>Total Candidates</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                    <i class="fa-solid fa-cube"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="lastBlock">-</h3>
+                    <p>Latest Block</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card full-width">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-list-ul"></i> Blockchain Event Stream</h3>
+            </div>
+            <div class="card-body">
+                <div id="auditLog" class="audit-log-container">
+                    <p class="empty-state" id="initialLoading">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Synchronizing with blockchain...
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../dist/audit.bundle.js" type="module"></script>
+</body>
+</html>

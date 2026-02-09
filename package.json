@@ -1,0 +1,26 @@
+{
+  "name": "decentralized-voting",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "START_PROJECT.bat"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@truffle/contract": "^4.6.18",
+    "browserify": "^17.0.0",
+    "ethers": "^5.7.2",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "web3": "^1.9.0"
+  },
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "^2.1.15",
+    "dotenv": "^17.2.3",
+    "ganache": "^7.9.2",
+    "truffle": "^5.11.5"
+  }
+}

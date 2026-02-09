@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voting Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- PDF and QR Code Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="../css/index.css">
+</head>
+
+<body>
+  <div class="overlay"></div>
+  
+
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <i class="fa-solid fa-landmark"></i>
+        <span data-i18n="nav.brand">Election Commission Of INDIA</span>
+      </div>
+      <div class="nav-items">
+        <button id="langToggle" class="nav-link-btn" onclick="toggleLanguage()">
+          🇮🇳 हिन्दी
+        </button>
+        <div class="nav-user">
+          <i class="fa-solid fa-user-circle"></i>
+          <span id="navUserId">Voter</span>
+        </div>
+        <button id="navLogout" class="nav-logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span data-i18n="nav.logout">Logout</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Election Ticker Banner -->
+  <div class="election-ticker" id="electionTicker">
+    <div class="ticker-icon">
+      <i class="fa-solid fa-bullhorn"></i>
+    </div>
+    <div class="ticker-wrapper">
+      <div class="ticker-content" id="tickerContent">
+        <span class="ticker-text" data-i18n="ticker.loading">🗳️ Welcome to the Decentralized Voting System | Loading updates...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <div class="main-content">
+    <div id="head">
+      <h1 class="main-title"><i class="fa-brands fa-ethereum"></i> <span data-i18n="hero.title">Decentralized Voting</span></h1>
+      <div class="subtitle">
+        <h2><i class="fa-solid fa-check-to-slot"></i> <span data-i18n="hero.subtitle">Cast Your Vote</span></h2>
+        <div class="date-badge"><i class="fa-regular fa-calendar"></i> <span id="dates">Loading dates...</span></div>
+      </div>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #8B5CF6, #A78BFA);">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="voterTotalCandidates">0</h3>
+          <p data-i18n="stats.candidates">Candidates</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #059669);">
+          <i class="fa-solid fa-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="voteStatus">Not Voted</h3>
+          <p data-i18n="stats.status">Your Status</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="leadingCandidate">-</h3>
+          <p data-i18n="stats.leading">Leading</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Visualization Section -->
+    <div class="visuals-grid">
+      <div id="resultsSection" class="glass-container results-section">
+        <h3><i class="fa-solid fa-chart-pie"></i> Real-time Results</h3>
+        <div class="chart-container">
+          <canvas id="resultsChart"></canvas>
+        </div>
+      </div>
+      <div id="distributionSection" class="glass-container results-section">
+        <h3><i class="fa-solid fa-chart-line"></i> Voting Distribution</h3>
+        <div class="chart-container">
+          <canvas id="distributionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div id="candidate" class="glass-container">
+      <!-- Loading Skeleton -->
+      <div id="loadingSkeleton" class="loading-skeleton" style="display: none;">
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <i class="fa-solid fa-inbox"></i>
+        <h3>No Candidates Yet</h3>
+        <p>Candidates will appear here once the admin adds them.</p>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="candidateSearch" placeholder="Search candidates or parties..." data-i18n="search.placeholder"
+          onkeyup="App.filterCandidates()">
+      </div>
+
+      <!-- Candidates Grid -->
+      <div id="candidatesGrid" class="candidates-grid">
+        <!-- Candidates will be loaded here dynamically -->
+      </div>
+
+      <div id="vote" class="vote-section">
+        <p class="instruction-text"><i class="fa-solid fa-circle-info"></i> Select a candidate above and click submit to
+          cast your vote.</p>
+
+        <button id="voteButton" class="btn-vote" onclick="App.vote()" disabled>
+          <span class="btn-text"><i class="fa-solid fa-check"></i> <span data-i18n="btn.vote">Submit Vote</span></span>
+          <span class="btn-loader" style="display: none;">
+            <i class="fa-solid fa-spinner fa-spin"></i> Processing...
+          </span>
+        </button>
+        <div id="msg"></div>
+
+        <div id="vote-box"></div>
+      </div>
+    </div>
+
+    <div id="account" class="account-info">
+      <p id="accountAddress"><i class="fa-solid fa-wallet"></i> Connecting...</p>
+    </div>
+  </div>
+
+  <!-- Vote Confirmation Modal -->
+  <div id="voteModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-check-to-slot"></i> <span data-i18n="modal.confirm">Confirm Your Vote</span></h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to vote for:</p>
+        <div class="modal-candidate">
+          <img id="modalCandidateImage" src="" alt="Candidate">
+          <div>
+            <h4 id="modalCandidateName">Candidate Name</h4>
+            <p id="modalCandidateParty">Party Name</p>
+          </div>
+        </div>
+        <p class="modal-warning"><i class="fa-solid fa-exclamation-triangle"></i> This action cannot be undone!</p>
+      </div>
+      <div class="modal-footer">
+        <button id="modalCancel" class="btn-modal-cancel">Cancel</button>
+        <button id="modalConfirm" class="btn-modal-confirm">Confirm Vote</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Candidate Details Modal -->
+  <div id="detailsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-circle-info"></i> Candidate Details</h3>
+      </div>
+      <div class="modal-body">
+        <div class="modal-candidate-header">
+          <img id="detailsCandidateImage" src="" alt="Candidate">
+          <div>
+            <h4 id="detailsCandidateName">Candidate Name</h4>
+            <p id="detailsCandidateParty">Party Name</p>
+          </div>
+        </div>
+        <div class="details-section">
+          <h5><i class="fa-solid fa-scroll"></i> Manifesto / Description</h5>
+          <p id="detailsCandidateDescription">No description available.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="detailsClose" class="btn-modal-cancel">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vote Success Modal with Receipt -->
+  <div id="voteSuccessModal" class="modal" style="display: none;">
+    <div class="modal-content success-modal">
+      <div class="modal-header success-header">
+        <div class="success-icon">
+          <i class="fa-solid fa-check-circle"></i>
+        </div>
+        <h3 data-i18n="modal.success">Vote Recorded Successfully!</h3>
+      </div>
+      <div class="modal-body">
+        <p class="success-message">Your vote has been securely recorded on the blockchain.</p>
+        
+        <div class="receipt-preview">
+          <div class="qr-container">
+            <div id="receiptQRCode" style="display: flex; justify-content: center; margin: 10px auto;"></div>
+            <p class="qr-label">Scan to verify your vote</p>
+          </div>
+          <div class="tx-hash-container">
+            <label>Transaction Hash:</label>
+            <code id="txHashDisplay">0x...</code>
+            <button id="copyTxHash" class="btn-copy" title="Copy to clipboard">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+        </div>
+
+        <p class="receipt-note">
+          <i class="fa-solid fa-info-circle"></i> 
+          Download your receipt to verify your vote anytime. Your vote choice remains private.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button id="downloadReceipt" class="btn-download-receipt">
+          <i class="fa-solid fa-file-pdf"></i> Download Receipt
+        </button>
+        <button id="closeSuccessModal" class="btn-modal-cancel">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="../dist/app.bundle.js"></script>
+  <script src="../js/language.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+﻿
+Compiling your contracts...
+===========================
+> Compiling .\contracts\Migrations.sol
+> Compiling .\contracts\Voting.sol
+> Artifacts written to C:\Users\Pradeep\Downloads\Decentralized-Voting-System-main\Decentralized-Voting-System-main\build\contracts
+> Compiled successfully using:
+   - solc: 0.5.16+commit.9c3226ce.Emscripten.clang
+
+
+Starting migrations...
+======================
+> Network name:    'development'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+1_initial_migration.js
+======================
+
+   Replacing 'Voting'
+   ------------------
+   > transaction hash:    0x662808924a82549825d8552f2539ac882e6ea5a2d081b931edb7ea47d45affb2
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xfdd95A911bb7005A8049C8Cb31DA85Cc80cA717C
+   > block number:        126
+   > block timestamp:     1770263612
+   > account:             0x4d6712afef19A520999ea6612b466d0179e42375
+   > balance:             99.950544239535582428
+   > gas used:            1393095 (0x1541c7)
+   > gas price:           2.500000792 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00348273860333124 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:     0.00348273860333124 ETH
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0.00348273860333124 ETH
+
+

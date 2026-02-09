@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | Decentralized Voting</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" type="text/css" href="../css/login.css">
+
+</head>
+
+<body>
+  <div class="overlay"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <i class="fa-solid fa-landmark"></i>
+        <span data-i18n="nav.brand">Election Commission Of INDIA</span>
+      </div>
+      <div class="nav-items">
+        <button id="langToggle" class="nav-link-btn" onclick="toggleLanguage()">
+          🇮🇳 हिन्दी
+        </button>
+        <div class="nav-user">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>Secure Voting Portal</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-content">
+
+    <div class="login-container">
+      <div class="login-header">
+        <h2 data-i18n="login.welcome">Welcome Back</h2>
+        <p data-i18n="login.subtitle">Secure Blockchain Voting System</p>
+      </div>
+
+      <!-- Role Selector -->
+      <div class="role-selector">
+        <button type="button" class="role-btn active" data-role="voter" id="voterRoleBtn">
+          <i class="fa-solid fa-user"></i>
+          <span data-i18n="role.voter">Voter</span>
+        </button>
+        <button type="button" class="role-btn" data-role="admin" id="adminRoleBtn">
+          <i class="fa-solid fa-user-shield"></i>
+          <span data-i18n="role.admin">Admin</span>
+        </button>
+      </div>
+
+      <form id="loginForm">
+        <!-- Error Message Container -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span id="errorText"></span>
+        </div>
+
+        <!-- Credentials Section -->
+        <div id="credentialsSection">
+          <div class="form-group">
+            <label for="voter-id"><i class="fa-solid fa-id-card"></i> <span id="idLabel" data-i18n="label.voterId">Voter ID</span></label>
+            <div class="input-wrapper">
+              <input type="text" id="voter-id" name="voter-id" placeholder="Enter your Voter ID" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password"><i class="fa-solid fa-lock"></i> Password</label>
+            <div class="input-wrapper password-wrapper">
+              <input type="password" id="password" name="password" placeholder="Enter your password" required>
+              <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- OTP Section (Hidden by default) -->
+        <div id="otpSection" style="display: none;">
+          <div class="form-group">
+            <label for="otp"><i class="fa-solid fa-shield-halved"></i> OTP Verification</label>
+            <p id="otpInstruction" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">A 6-digit code has been sent
+              to your chosen method.</p>
+            <div class="input-wrapper">
+              <input type="text" id="otp" name="otp" placeholder="Enter 6-digit OTP" maxlength="6" pattern="\d{6}">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="loginBtn">
+          <span class="btn-text">Login as <span id="roleText">Voter</span></span>
+          <i class="fa-solid fa-arrow-right btn-icon"></i>
+          <span class="btn-loader" style="display: none;">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+          </span>
+        </button>
+      </form>
+      <div class="login-footer">
+        <p>Don't have an ID? <a href="register.html" data-i18n="link.register" style="color: var(--primary-light); text-decoration: none; font-weight: 600;">Register here</a></p>
+        <p style="margin-top: 10px;">
+          <a href="audit.html" style="color: var(--primary-light); text-decoration: none; font-weight: 600;">
+            <i class="fa-solid fa-shield-halved"></i> View Public Audit Portal
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="../js/login.js"></script>
+  <!-- <script src="../dist/login.bundle.js"></script> -->
+  <script src="../js/language.js"></script>
+</body>
+
+</html>
